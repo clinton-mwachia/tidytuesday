@@ -51,7 +51,6 @@ hist(peaks1$height_metres)
 
 ggplot(data = peaks1, aes(x=climbing_status,y=height_metres)) +
   geom_violin() +
-  geom_jitter(width = 0.2) +
-  geom_text()
+  geom_jitter(width = 0.2) 
 
 
