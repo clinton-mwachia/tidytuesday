@@ -1,11 +1,13 @@
 # loading packages
 library(tidytuesdayR)
 library(tidyverse)
+library(DataExplorer)
+library(reg)
 
 # getting the data
 ttdata <- tt_load('2021-01-12')
 
-# artwork data set
+###### artwork data set
 artworkdata <- ttdata$artwork
 
 # analysis of the data
@@ -21,10 +23,28 @@ artworkdata %>%
   #str()
 
 # percentage of na columns
-artworkdata %>% 
-  colSums(is.na())
+na_perc <- (colSums(is.na(artworkdata)) / nrow(artworkdata)) * 100
+round(na_perc ,1)
 
+# plot NA percentages
+plot_missing(artworkdata)
 
+# PREPROCESSING
+# artist with more work
+artworkdata %>%
+  count(artist, sort = TRUE) %>%
+  view()
 
-# artists data set
+artworkdata %>%
+  count(artist, sort = TRUE) %>%
+  #filter(n > 600) %>%
+  mutate(artist = reorder(word, n)) %>%
+  ggplot(aes(artist, n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip()
+
+# removing ? (?)
+
+###### artists data set
 artistsdata <- ttdata$artists
