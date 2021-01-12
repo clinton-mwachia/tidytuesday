@@ -2,7 +2,6 @@
 library(tidytuesdayR)
 library(tidyverse)
 library(DataExplorer)
-library(reg)
 
 # getting the data
 ttdata <- tt_load('2021-01-12')
@@ -35,13 +34,15 @@ artworkdata %>%
   count(artist, sort = TRUE) %>%
   view()
 
+# artist with more work
 artworkdata %>%
   count(artist, sort = TRUE) %>%
-  #filter(n > 600) %>%
-  mutate(artist = reorder(word, n)) %>%
+  filter(n > 500) %>%
+  mutate(artist = reorder(artist, n)) %>%
   ggplot(aes(artist, n)) +
-  geom_col() +
+  geom_col(fill="red") +
   xlab(NULL) +
+  ggtitle("artists work count") +
   coord_flip()
 
 # removing ? (?)
