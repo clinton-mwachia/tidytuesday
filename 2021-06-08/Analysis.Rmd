@@ -1,0 +1,90 @@
+---
+title: "Tidytuesday"
+author: "clinton Moshe"
+date: "6/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+```{r}
+library(tidyverse)
+```
+
+## Loading the data
+
+```{r}
+# fish data
+fishing <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-06-08/fishing.csv')
+# stock data
+stocked <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-06-08/stocked.csv')
+```
+
+## Fishing Visualization
+
+### handling NA 
+
+```{r}
+round((colSums(is.na(fishing)) / nrow(fishing))*100,2)
+```
+
+```{r}
+fishing1 <- data.table::copy(fishing) # copy the data
+
+# select columns without NA
+fishing2 <- fishing1 %>%
+  select_if(~!any(is.na(.))) %>%
+  mutate(value = fishing1$values) %>%
+  na.omit()
+
+# confirm
+round((colSums(is.na(fishing2)) / nrow(fishing2))*100,2)
+
+# convert all characters to factor
+fishing2 <- fishing2 %>%
+  mutate_if(is.character, as.factor)
+```
+
+
+```{r}
+# Total Production amount by lake
+fishing2 %>%
+  group_by(lake) %>%
+  summarise(totValue = sum(value, na.rm = TRUE)) %>%
+  arrange(desc(totValue))
+```
+
+
+```{r}
+# Total Production amount by species
+fishing2 %>%
+  group_by(species) %>%
+  summarise(totValue = sum(value, na.rm = TRUE)) %>%
+  arrange(desc(totValue))
+```
+
+
+```{r}
+# Total Production amount by region
+fishing2 %>%
+  group_by(region) %>%
+  summarise(totValue = sum(value, na.rm = TRUE)) %>%
+  arrange(desc(totValue))
+```
+
+```{r}
+# selecting distinct lake, species, region
+fishing2 %>%
+  distinct(lake)
+
+fishing2 %>%
+  distinct(species)
+
+fishing2 %>%
+  distinct(region)
+```
+
